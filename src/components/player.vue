@@ -94,12 +94,14 @@
 </template>
 
 <script>
+  import Filters from '@/mixins/filters'
   import IconButton    from './icon-button'
   import LineControl   from './line-control'
   import VolumeControl from './volume-control'
   import { convertTimeMMSS } from '@/lib/utils'
 
   export default {
+    mixins: [Filters],
     props: {
       src      : { type: String },
       record   : { type: Object },

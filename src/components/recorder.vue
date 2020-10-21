@@ -246,6 +246,7 @@
 </template>
 
 <script>
+  import Filters from '@/mixins/filters'
   import AudioPlayer from './player'
   import Downloader  from './downloader'
   import IconButton  from './icon-button'
@@ -255,7 +256,7 @@
   import { convertTimeMMSS }  from '@/lib/utils'
 
   export default {
-    mixins: [UploaderPropsMixin],
+    mixins: [UploaderPropsMixin, Filters],
     props: {
       attempts : { type: Number },
       time     : { type: Number },
