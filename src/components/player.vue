@@ -79,13 +79,13 @@
     </div>
 
     <div class="ar-player-bar">
-      <div class="ar-player__time">{{playedTime}}</div>
+      <div class="ar-player__time">{{playedTime | ntp}}</div>
       <line-control
         class="ar-player__progress"
         ref-id="progress"
         :percentage="progress"
         @change-linehead="_onUpdateProgress"/>
-      <div class="ar-player__time">{{duration}}</div>
+      <div class="ar-player__time">{{duration | ntp}}</div>
       <volume-control @change-volume="_onChangeVolume"/>
     </div>
 

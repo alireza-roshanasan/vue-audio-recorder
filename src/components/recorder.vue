@@ -206,9 +206,9 @@
           @click.native="stopRecorder"/>
       </div>
 
-      <div class="ar-recorder__records-limit" v-if="attempts">Attempts: {{attemptsLeft}}/{{attempts}}</div>
-      <div class="ar-recorder__duration">{{recordedTime}}</div>
-      <div class="ar-recorder__time-limit" v-if="time">Record duration is limited: {{time}}m</div>
+      <div class="ar-recorder__records-limit" v-if="attempts">تلاشها: {{attemptsLeft | ntp}}/{{attempts | ntp}}</div>
+      <div class="ar-recorder__duration">{{recordedTime | ntp}}</div>
+      <div class="ar-recorder__time-limit" v-if="time">محدویت زمان ظبط: {{time | ntp}}دقیقه</div>
 
       <div class="ar-records">
         <div
@@ -221,8 +221,8 @@
               class="ar__rm"
               v-if="record.id === selected.id"
               @click="removeRecord(idx)">&times;</div>
-            <div class="ar__text">Record {{idx + 1}}</div>
-            <div class="ar__text">{{record.duration}}</div>
+            <div class="ar__text">ظبط {{idx + 1 | ntp}}</div>
+            <div class="ar__text">{{record.duration | ntp}}</div>
 
             <downloader
               v-if="record.id === selected.id && showDownloadButton"
