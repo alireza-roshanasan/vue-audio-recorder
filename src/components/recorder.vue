@@ -168,7 +168,11 @@
       bottom: 0;
       margin: auto;
     }
-
+    &__saver{
+      position: absolute;
+      top: 13px;
+      right: 86px;
+    }
     &__downloader {
       right: 115px;
     }
@@ -208,7 +212,7 @@
 
       <div class="ar-recorder__records-limit" v-if="attempts">تلاشها: {{attemptsLeft | ntp}}/{{attempts | ntp}}</div>
       <div class="ar-recorder__duration">{{recordedTime | ntp}}</div>
-      <div class="ar-recorder__time-limit" v-if="time">محدویت زمان ظبط: {{time | ntp}}دقیقه</div>
+      <div class="ar-recorder__time-limit" v-if="time">محدویت زمان ضبط: {{time | ntp}}دقیقه</div>
 
       <div class="ar-records">
         <div
@@ -221,7 +225,7 @@
               class="ar__rm"
               v-if="record.id === selected.id"
               @click="removeRecord(idx)">&times;</div>
-            <div class="ar__text">ظبط {{idx + 1 | ntp}}</div>
+            <div class="ar__text">ضبط {{idx + 1 | ntp}}</div>
             <div class="ar__text">{{record.duration | ntp}}</div>
 
             <downloader
@@ -231,12 +235,16 @@
               :filename="filename"/>
 
             <uploader
-              v-if="record.id === selected.id && showUploadButton"
+              v-if="record.id === selected.id && showUploadButton && !save"
               class="ar__uploader"
               :record="record"
               :filename="filename"
               :headers="headers"
               :upload-url="uploadUrl"/>
+            <saver
+              v-if="record.id === selected.id && showUploadButton && save"
+              class="ar__saver"
+              :record="record"/>
         </div>
       </div>
 
@@ -252,6 +260,7 @@
   import IconButton  from './icon-button'
   import Recorder    from '@/lib/recorder'
   import Uploader    from './uploader'
+  import Saver    from './saver'
   import UploaderPropsMixin from '@/mixins/uploader-props'
   import { convertTimeMMSS }  from '@/lib/utils'
 
@@ -260,6 +269,7 @@
     props: {
       attempts : { type: Number },
       time     : { type: Number },
+      save     : { type: Boolean, default:false },
 
       bitRate    : { type: Number, default: 128   },
       sampleRate : { type: Number, default: 44100 },
@@ -270,6 +280,7 @@
       micFailed        : { type: Function },
       beforeRecording  : { type: Function },
       pauseRecording   : { type: Function },
+      saveRecording    : { type: Function },
       afterRecording   : { type: Function },
       failedUpload     : { type: Function },
       beforeUpload     : { type: Function },
@@ -289,9 +300,13 @@
       AudioPlayer,
       Downloader,
       IconButton,
-      Uploader
+      Uploader,
+      Saver
     },
     mounted () {
+      this.$eventBus.$on('save-upload', (data) => {
+        this.saveRecording(data)
+      })
       this.$eventBus.$on('start-upload', () => {
         this.isUploading = true
         this.beforeUpload && this.beforeUpload('before upload')
@@ -347,10 +362,12 @@
           beforeRecording : this.beforeRecording,
           afterRecording  : this.afterRecording,
           pauseRecording  : this.pauseRecording,
+          saveRecording   : this.saveRecording,
           micFailed       : this.micFailed,
           bitRate         : this.bitRate,
           sampleRate      : this.sampleRate,
-          format          : this.format
+          format          : this.format,
+          save            : this.save
         })
       }
     },
